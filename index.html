@@ -85,7 +85,7 @@
             }
             ctxa.fill();
 
-            ctxa.fillStyle = "rgb("+colors[type]+")";
+            ctxa.fillStyle = "rgb(" + colors[type] + ")";
             ctxa.beginPath();
             if (type == "erase") {
                 ctxa.arc(x, y, eraserSizes[size], 0, 2 * Math.PI);
@@ -105,18 +105,33 @@
             if (!draw)
                 return;
             ctxb.lineCap = "round";
-            for(let i = 0; i < 5; i++) {
-                ctxb.strokeStyle = "rgba("+colors[type]+", "+(Math.pow(2,i)/16)+")";
+            for (let i = 0; i < 5; i++) {
+                ctxb.strokeStyle = "rgba(" + colors[type] + ", " + (Math.pow(2, i) / 16) + ")";
                 if (type == "erase")
-                    ctxb.lineWidth = eraserSizes[size] * 2 - 2*i;
+                    ctxb.lineWidth = eraserSizes[size] * 2 - 2 * i;
                 else
-                    ctxb.lineWidth = brushSizes[size] * 2 - 2*i;
+                    ctxb.lineWidth = brushSizes[size] * 2 - 2 * i;
                 ctxb.beginPath();
                 ctxb.moveTo(superOldMouseX, superOldMouseY);
                 ctxb.bezierCurveTo(reallyOldMouseX, reallyOldMouseY, oldMouseX, oldMouseY, mouseX, mouseY);
                 // ctxb.moveTo(oldMouseX, oldMouseY);
                 // ctxb.lineTo(mouseX, mouseY);
                 ctxb.stroke();
+            }
+        }
+
+        function putDot() {
+            console.log("dot");
+            for (let i = 0; i < 5; i++) {
+                ctxb.fillStyle = "rgba(" + colors[type] + ", " + (Math.pow(2, i) / 16) + ")";
+                let r = 0;
+                if (type == "erase")
+                    r = eraserSizes[size] - i;
+                else
+                    r = brushSizes[size] - i;
+                ctxb.beginPath();
+                ctxb.arc(mouseX, mouseY, r, 0, 2 * Math.PI);
+                ctxb.fill();
             }
         }
 
@@ -144,10 +159,18 @@
             if (event.key == "t")
                 type = "e";
             if (event.key == "g") {
-                if (type != "erase")
+                if (!draw && type != "erase"){
+                    superOldMouseX = mouseX;
+                    superOldMouseY = mouseY;
+                    reallyOldMouseX = mouseX;
+                    reallyOldMouseY = mouseY;
+                    oldMouseX = mouseX;
+                    oldMouseY = mouseY;
+                    draw = true;
                     oldType = type;
-                type = "erase";
-                draw = true;
+                    type = "erase";
+                    putDot();
+                }
             }
             if (event.key == "a")
                 size = "small";
@@ -156,8 +179,18 @@
             if (event.key == "d")
                 size = "large";
             drawAbove();
-            if (event.key == "f")
-                draw = true;
+            if (event.key == "f") {
+                if (!draw){
+                    superOldMouseX = mouseX;
+                    superOldMouseY = mouseY;
+                    reallyOldMouseX = mouseX;
+                    reallyOldMouseY = mouseY;
+                    oldMouseX = mouseX;
+                    oldMouseY = mouseY;
+                    draw = true;
+                    putDot();
+                }
+            }
             if (event.key == "j") {
                 board.width = WIDTH;
                 board.height = HEIGHT;
