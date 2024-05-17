@@ -1,0 +1,14 @@
+{
+  "name": "paint",
+  "version": "0.0.1",
+  "description": "the best paint program!!",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "eh otay",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "electron": "^30.0.6"
+  }
+}

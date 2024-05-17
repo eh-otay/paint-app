@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <style>
+        html,
+        body,
+        canvas {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+            cursor: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="board"></canvas>
+    <canvas id="above"></canvas>
+    <script>
+        const board = document.querySelector("#board");
+        const ctxb = board.getContext("2d");
+
+        const above = document.querySelector("#above");
+        const ctxa = above.getContext("2d");
+
+        const WIDTH = document.body.clientWidth;
+        const HEIGHT = document.body.clientHeight;
+
+        let superOldMouseX = 0;
+        let superOldMouseY = 0;
+        let reallyOldMouseX = 0;
+        let reallyOldMouseY = 0;
+        let oldMouseX = 0;
+        let oldMouseY = 0;
+        let mouseX = 0;
+        let mouseY = 0;
+        let draw = false;
+
+        const brushSizes = {
+            "small": 4,
+            "mid": 8,
+            "large": 15
+        };
+        const eraserSizes = {
+            "small": 8,
+            "mid": 16,
+            "large": 30,
+        };
+        const colors = {
+            "erase": "255, 255, 224",
+            "a": "0, 0, 0",
+            "b": "21, 7, 171",
+            "c": "150, 8, 8",
+            "d": "117, 114, 4",
+            "e": "8, 84, 1",
+        }
+        let size = "mid";
+        let type = "a";
+        let oldType = "a";
+
+        function drawCursor(x, y, size, type) {
+            ctxa.fillStyle = "#ffffff";
+            ctxa.beginPath();
+            if (type == "erase") {
+                ctxa.arc(x, y, eraserSizes[size] + 4, 0, 2 * Math.PI);
+            } else {
+                ctxa.arc(x, y, brushSizes[size] + 4, 0, 2 * Math.PI);
+            }
+            ctxa.fill();
+
+            ctxa.fillStyle = "#000000";
+            ctxa.beginPath();
+            if (type == "erase") {
+                ctxa.arc(x, y, eraserSizes[size] + 2, 0, 2 * Math.PI);
+            } else {
+                ctxa.arc(x, y, brushSizes[size] + 2, 0, 2 * Math.PI);
+            }
+            ctxa.fill();
+
+            ctxa.fillStyle = "rgb("+colors[type]+")";
+            ctxa.beginPath();
+            if (type == "erase") {
+                ctxa.arc(x, y, eraserSizes[size], 0, 2 * Math.PI);
+            } else {
+                ctxa.arc(x, y, brushSizes[size], 0, 2 * Math.PI);
+            }
+            ctxa.fill();
+        }
+
+        function drawAbove() {
+            above.width = WIDTH;
+            above.height = HEIGHT;
+            drawCursor(mouseX, mouseY, size, type);
+        }
+
+        function drawBoard() {
+            if (!draw)
+                return;
+            ctxb.lineCap = "round";
+            for(let i = 0; i < 5; i++) {
+                ctxb.strokeStyle = "rgba("+colors[type]+", "+(Math.pow(2,i)/16)+")";
+                if (type == "erase")
+                    ctxb.lineWidth = eraserSizes[size] * 2 - 2*i;
+                else
+                    ctxb.lineWidth = brushSizes[size] * 2 - 2*i;
+                ctxb.beginPath();
+                ctxb.moveTo(superOldMouseX, superOldMouseY);
+                ctxb.bezierCurveTo(reallyOldMouseX, reallyOldMouseY, oldMouseX, oldMouseY, mouseX, mouseY);
+                // ctxb.moveTo(oldMouseX, oldMouseY);
+                // ctxb.lineTo(mouseX, mouseY);
+                ctxb.stroke();
+            }
+        }
+
+        above.addEventListener("mousemove", (event) => {
+            superOldMouseX = reallyOldMouseX;
+            superOldMouseY = reallyOldMouseY;
+            reallyOldMouseX = oldMouseX;
+            reallyOldMouseY = oldMouseY;
+            oldMouseX = mouseX;
+            oldMouseY = mouseY;
+            mouseX = event.pageX;
+            mouseY = event.pageY;
+            drawAbove();
+            drawBoard();
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key == "q")
+                type = "a";
+            if (event.key == "w")
+                type = "b";
+            if (event.key == "e")
+                type = "c";
+            if (event.key == "r")
+                type = "d";
+            if (event.key == "t")
+                type = "e";
+            if (event.key == "g") {
+                if (type != "erase")
+                    oldType = type;
+                type = "erase";
+                draw = true;
+            }
+            if (event.key == "a")
+                size = "small";
+            if (event.key == "s")
+                size = "mid";
+            if (event.key == "d")
+                size = "large";
+            drawAbove();
+            if (event.key == "f")
+                draw = true;
+            if (event.key == "j") {
+                board.width = WIDTH;
+                board.height = HEIGHT;
+
+                ctxb.fillStyle = "#ffffe0";
+                ctxb.fillRect(0, 0, WIDTH, HEIGHT);
+            }
+        });
+        document.addEventListener("keyup", (event) => {
+            if (oldType != "erase" && event.key == "g")
+                type = oldType;
+            if (event.key == "f" || event.key == "g")
+                draw = false;
+            drawAbove();
+        });
+
+        board.width = WIDTH;
+        board.height = HEIGHT;
+
+        ctxb.fillStyle = "#ffffe0";
+        ctxb.fillRect(0, 0, WIDTH, HEIGHT);
+
+    </script>
+</body>
+
+</html>
