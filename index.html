@@ -65,6 +65,7 @@
         let size = "mid";
         let type = "a";
         let oldType = "a";
+        let strength = 5;
 
         function drawCursor(x, y, size, type) {
             ctxa.fillStyle = "#ffffff";
@@ -105,7 +106,7 @@
             if (!draw)
                 return;
             ctxb.lineCap = "round";
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < strength; i++) {
                 ctxb.strokeStyle = "rgba(" + colors[type] + ", " + (Math.pow(2, i) / 16) + ")";
                 if (type == "erase")
                     ctxb.lineWidth = eraserSizes[size] * 2 - 2 * i;
@@ -122,7 +123,7 @@
 
         function putDot() {
             console.log("dot");
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < strength; i++) {
                 ctxb.fillStyle = "rgba(" + colors[type] + ", " + (Math.pow(2, i) / 16) + ")";
                 let r = 0;
                 if (type == "erase")
@@ -159,7 +160,7 @@
             if (event.key == "t")
                 type = "e";
             if (event.key == "g") {
-                if (!draw && type != "erase"){
+                if (!draw && type != "erase") {
                     superOldMouseX = mouseX;
                     superOldMouseY = mouseY;
                     reallyOldMouseX = mouseX;
@@ -178,9 +179,8 @@
                 size = "mid";
             if (event.key == "d")
                 size = "large";
-            drawAbove();
             if (event.key == "f") {
-                if (!draw){
+                if (!draw) {
                     superOldMouseX = mouseX;
                     superOldMouseY = mouseY;
                     reallyOldMouseX = mouseX;
@@ -198,6 +198,18 @@
                 ctxb.fillStyle = "#ffffe0";
                 ctxb.fillRect(0, 0, WIDTH, HEIGHT);
             }
+            if (event.key == "1")
+                strength = 1;
+            if (event.key == "2")
+                strength = 2;
+            if (event.key == "3")
+                strength = 3;
+            if (event.key == "4")
+                strength = 4;
+            if (event.key == "5")
+                strength = 5;
+
+            drawAbove();
         });
         document.addEventListener("keyup", (event) => {
             if (oldType != "erase" && event.key == "g")
