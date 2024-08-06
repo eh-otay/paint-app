@@ -7,7 +7,7 @@ function createWindow () {
     resizable: false
   })
 
-  win.loadFile('index.html')
+  win.loadFile('paint/index.html')
 }
 
 app.whenReady().then(() => {
