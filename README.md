@@ -9,6 +9,7 @@ Hi guys this is my personal project to create a light and fast paint tool. I per
 |E  |Red   |
 |R  |Yellow|
 |T  |Green |
+|Y  |Custom|
 ### Size
 |Key |Brush Size|Eraser Size|
 |----|----------|-----------|
@@ -24,8 +25,9 @@ Hi guys this is my personal project to create a light and fast paint tool. I per
 |4   |1/2     |
 |5   |1       |
 ### Actions
-|Key|Action|
-|---|------|
-|F  |Draw  |
-|G  |Erase |
-|J  |Clear |
+|Key|Action          |
+|---|----------------|
+|F  |Draw            |
+|G  |Erase           |
+|J  |Clear           |
+|H  |Set Custom Color|
